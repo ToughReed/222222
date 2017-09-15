@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+<struts>
+	<!-- 允许动态方法访问action类 -->
+	<constant name="struts.enable.DynamicMethodInvocation" value="true" />
+    <!-- <constant name="struts.devMode" value="true" /> -->
+	<!-- 
+		包可以“继承”已定义的包，并可以添加自己包的配置
+		name:包的名称，属性为必须且唯一，用于指定包的名称
+		extends:属性指定要扩展的包，通常情况下继承struts-default
+		namespace:(可选)名称空间，通常和<action>标签中的name属性共同决定访问路径
+				/,访问路径为/demo01.action
+				/aaa,则访问路径应为/aaa/demo01.action
+	 -->
+    <package name="default" namespace="/" extends="struts-default">
+    
+    	<!-- 
+    		<action>标签用来配置Action类
+    		name：与namespace共同决定访问路径
+    		class：Action类的全路径
+    		method：Action中执行的方法名，不写method属性默认为execute
+    	 -->
+    	<!-- 动态方法访问
+    	 	路径：/user!register.action 
+    	 	action:	
+    	 		name:user method:register	
+    	-->
+        <action name="user" class="cn.itcast.web.Demo01Action" method="register">
+        	<result name="success">/success.jsp</result>
+        </action>
+        
+    	 <!-- 通过method属性配置
+    	 	路径：/login.action
+    	 	action:
+    	 		name:login	method:login
+    	  -->
+        <action name="login" class="cn.itcast.web.Demo02Action"  method="login">
+        	<result name="success">/success.jsp</result>
+        </action>
+        
+        <!-- 通过通配符的配置方式
+        	路径：/login_User.action
+        	action:
+        		name:*_User	(这里*为login)，login_User
+        		method:{1} 占位符代表第一个*，也就是方法为login
+        	result:
+        		name:{1}_success	即方法返回值为login_success
+        		/{1}_success.jsp	即跳转到login_success.jsp页面
+         -->
+        <action name="*_User" class="cn.itcast.web.Demo03Action" method="{1}">
+        	<result name="{1}_success">/{1}_success.jsp</result>
+        </action>
+        <!--
+        	路径：/add_Product.action
+        	action:
+        		name:*_*r	第一个*为add，第二个*为Product，add_Product
+        		class:cn.itcast.web.{2}Action	访问的是ProductAction类
+        		method:{1} 占位符1代表第一个*，也就是方法为add
+        	result:
+        		name:{1}_success	即方法返回值为add_success
+        		/{1}_success.jsp	即跳转到add_success.jsp页面 
+         -->
+        <action name="*_*" class="cn.itcast.web.{2}Action" method="{1}">
+        	<result name="{1}_success">/{1}_success.jsp</result>
+        </action>
+       	
+    </package>
+
+</struts>
